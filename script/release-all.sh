@@ -241,7 +241,13 @@ publish_github_release() {
     find "$ROOT/release/desktop" -type f \( -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' -o -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \) 2>/dev/null | sort )
   for f in "${FILES[@]}"; do
     [ -f "$f" ] || continue
-    name="$(basename "$f")"
+    # أسماء أرتيفاكتات GitHub يجب أن تكون ASCII (العربي يتلفه GitHub Releases)
+    case "$f" in
+      "$APK/$APK_RELEASE") name="adhkar-al-muslim-$VERSION-release.apk" ;;
+      "$PLAY/$AAB_PLAY")   name="adhkar-al-muslim-$VERSION-release.aab" ;;
+      "$APK/$APK_DEBUG")   name="adhkar-al-muslim-$VERSION-debug.apk" ;;
+      *)                   case "$(basename "$f")" in *"$VERSION"*) name="$(basename "$f")" ;; *) continue ;; esac ;;
+    esac
     enc="$(python3 -c 'import sys,urllib.parse;print(urllib.parse.quote(sys.argv[1]))' "$name")"
     curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/octet-stream" \
       --data-binary "@$f" "$UPLOAD$enc" | jq -e '.id' >/dev/null 2>&1 \
