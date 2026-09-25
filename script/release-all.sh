@@ -81,14 +81,15 @@ fetch_ci_artifacts() {
   printf '  → انتظار إتمام خطوط العمل (desktop.yml + ios.yml) للالتزام %s…\n' "$SHA"
   deadline=$(( $(date +%s) + 1500 ))
   while :; do
-    local pending=0
+    local pending=0 anyrun=0
     while read -r id st; do
       [ -z "$id" ] && continue
+      anyrun=1
       [ "$st" = "completed" ] || pending=$((pending + 1))
     done < <(curl -s -H "Authorization: Bearer $TOKEN" \
               "$API/actions/runs?head_sha=$SHA&per_page=20" \
             | jq -r '.workflow_runs[] | [.id,.status] | @tsv')
-    if [ "$pending" -eq 0 ]; then break; fi
+    if [ "$anyrun" -gt 0 ] && [ "$pending" -eq 0 ]; then break; fi
     if [ "$(date +%s)" -ge "$deadline" ]; then
       printf '  ⚠ انتهت مهلة الانتظار — أكمل لاحقاً عبر: npm run release\n'
       rm -rf "$TMP"; return 1
