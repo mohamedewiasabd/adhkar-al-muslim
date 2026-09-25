@@ -1,0 +1,7 @@
+name: CI sanit
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: echo probe-ok
