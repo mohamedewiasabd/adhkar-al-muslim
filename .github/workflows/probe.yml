@@ -1,7 +1,14 @@
 name: CI sanit
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
 jobs:
   probe:
     runs-on: ubuntu-22.04
     steps:
       - run: echo probe-ok
+  probe-win:
+    runs-on: windows-latest
+    steps:
+      - run: echo probe-win-ok
