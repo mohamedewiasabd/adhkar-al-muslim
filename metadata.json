@@ -1,0 +1,6 @@
+{
+  "name": "أذكار المسلم - الورد اليومي",
+  "description": "برنامج شامل للأذكار والأدعية والمصحف الشريف كاملاً مع متابعة ورد التلاوة وسجل الحفظ وتصدير الآيات كفيديو بالصوت أو صور ومسبحة إلكترونية وتنبيهات تلقائية.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

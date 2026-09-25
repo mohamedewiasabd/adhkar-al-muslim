@@ -1,0 +1,39 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# أسرار أندرويد والتوقيع — لا تُرفع أبداً
+android/key.properties
+android/local.properties
+android/keystore/
+android/.gradle/
+release/keystore/
+
+# نواتج الإصدارات (APKs / AABs / سطح المكتب / ايفون)
+release/*.apk
+release/*.aab
+release/apk/
+release/play/
+release/desktop/
+release/ipa/
+
+# Tauri — نواتج البناء والملفات المولّدة
+src-tauri/target/
+src-tauri/gen/
+src-tauri/icons/android/
+src-tauri/icons/ios/
+
+# iOS (Capacitor) — نواتج البناء
+ios/App/Pods/
+ios/App/DerivedData/
+ios/App/build/
+ios/App/App.xcworkspace/
+*.xcuserstate
+
+# سجل تشغيل البروتوكول الإلزامي
+.release-last.log

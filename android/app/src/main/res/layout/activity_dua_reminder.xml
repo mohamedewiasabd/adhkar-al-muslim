@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dua_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#99052114"
+    android:clickable="true"
+    android:layoutDirection="rtl"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="22dp"
+        android:orientation="vertical"
+        android:background="@drawable/dua_card_bg"
+        android:elevation="16dp"
+        android:padding="0dp">
+
+        <!-- رأس البطاقة مع زر الإغلاق -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@drawable/dua_card_header_bg">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="أذكار المسلم • الورد اليومي"
+                    android:textColor="#065f46"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
+
+                <TextView
+                    android:id="@+id/dua_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="تذكير بذكر الله"
+                    android:textColor="#6b7280"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/dua_close_bg"
+                android:gravity="center"
+                android:text="✕"
+                android:textColor="#6b7280"
+                android:textSize="15sp"
+                android:contentDescription="إغلاق" />
+        </FrameLayout>
+
+        <!-- نص الدعاء -->
+        <TextView
+            android:id="@+id/dua_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="8dp"
+            android:fontFamily="serif"
+            android:gravity="center"
+            android:lineSpacingExtra="8dp"
+            android:text="﴿ سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ﴾"
+            android:textColor="#1f2937"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- فضل الدعاء -->
+        <TextView
+            android:id="@+id/dua_benefit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="22dp"
+            android:paddingTop="4dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:textColor="#0d9488"
+            android:textSize="13sp" />
+
+        <!-- المصدر والتخريج -->
+        <TextView
+            android:id="@+id/dua_reference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="22dp"
+            android:paddingTop="2dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:textColor="#9ca3af"
+            android:textSize="11sp" />
+
+        <!-- زر الإغلاق -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/dua_close"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/dua_button_bg"
+                android:gravity="center"
+                android:paddingHorizontal="28dp"
+                android:text="آمين — تقبّل الله  🚪"
+                android:textColor="#ffffff"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

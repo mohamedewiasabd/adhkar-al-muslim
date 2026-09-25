@@ -1,0 +1,100 @@
+=====================================================
+وصف متجر Play Console — أذكار المسلم: الورد اليومي
+=====================================================
+
+----------------------------------------
+1) الوصف القصير (Short description — حد: 80 حرفاً)
+----------------------------------------
+أذكار المسلم: أذكار الصباح والمساء، أدعية، أسماء الله، تسبيح، قرآن، ورد يومي.
+[الطول: 77 حرفاً ✓]
+
+----------------------------------------
+2) الوصف الطويل (Full description — حد: 4000 حرفاً)
+----------------------------------------
+أذكار المسلم — وردك اليومي الشامل والصوتي
+
+تطبيق متكامل يجمع ما يحتاجه المسلم يومياً في مكان واحد: أذكار وأدعية مأثورة مرتبة ومصنفة، مع ميزة الاستماع بالصوت العربي وأدوات مشاركة وتصدير جميلة.
+
+أهم المميزات:
+
+🔹 أذكار الصباح والمساء وكل المناسبات
+- أذكار الصباح والمساء، النوم والاستيقاظ، بعد الصلاة، دخول المنزل والخروج، الأكل، السفر، المطر، وغيرها.
+- عدّاد تفاعلي يزداد بالنقر مع اهتزاز عند إتمام الذكر.
+
+🔹 أدعية مأثورة (أكثر من 90 دعاءً)
+- أدعية قرآنية ونبوية مصنفة: تفريج الكرب، الرزق، الشفاء، الرحمة، السفر، الاستخارة، قيام الليل، الوالدين والموتى، وغيرها.
+- كل دعاء مشروح بفضله ومصدره.
+
+🔹 أسماء الله الحسنى
+- الأسماء الحسنى التسعة والتسعون مع شرح مختصر وفضل ومصدر لكل اسم.
+- بطاقة «اسم اليوم» و«وِرد اليوم» تتغير يومياً تلقائياً.
+
+🔹 الرقية الشرعية
+- آيات وأدعية الرقية مرتبة ومقسمة مرحلياً مع عدد التكرار المناسب وآداب الرقية.
+
+🔹 القرآن الكريم
+- تصفح السور والآيات، تتبع الحفظ، وتحديد هدف قراءة يومي.
+
+🔹 المسبحة والتسبيح
+- عدّاد تسبيح سلس مع خلفية صوتية ناعمة ومؤشر تقدّم.
+
+🔹 الورد اليومي
+- تتبع أدائك اليومي لأذكارك وأورادك مع تذكير.
+
+🔹 مشاركة وتصدير
+- انسخ النص، أو صدّره كبطاقة صورة جذابة بالعربية، أو شاركه عبر واتساب وتيليجرام وغيرهما.
+
+🔹 بحث ذكي بالعربية
+- بحث يهمّل التشكيل ويتحمل اختلاف الكتابة.
+
+🔹 المفضلة
+- احفظ أذكارك وأدعيتك المفضلة للوصول السريع.
+
+🔹 إشعارات تذكير
+- تذكير مبرمج بوردك اليومي مع إمكانية العرض على ملء الشاشة لوقت الأذكار مع بدء الاستيقاظ.
+
+🔹 مواقيت الصلاة والأذان
+- مواقيت دقيقة للصلوات الخمس والشروق يومياً (عدة طرق حساب: المصري، أم القرى، رابطة العالم الإسلامي وغيرها، مع ضبط يدوي للإحداثيات).
+- صلاة الأوابين قبل الظهر بساعة، وبداية الثلث الأخير من الليل لقيام الليل.
+- إشعارات قبل الأذان بعدة دقائق، وأذان صوتي عند دخول الوقت (يعمل حتى بعد إغلاق التطبيق).
+- ويدجد «الصلاة القادمة والوقت المتبقي» على الشاشة الرئيسية يتحدّث كل دقيقة.
+
+🔹 مجاني وبلا إنترنت
+- يعمل دون اتصال بالإنترنت مع إمكانية الاستماع الصوتي بمحرك جهازك.
+
+التطبيق لأغراض الذكر والدعاء والطمأنينة الروحية فقط، ولا يقدم علاجاً طبياً.
+
+----------------------------------------
+تنبيهات التوافق مع سياسات جوجل (قبل الرفع):
+----------------------------------------
+1) فئة المحتوى: دينية (Religion) — ليست في الفئات الحساسة.
+2) لا توجد إعلانات ممنوعة على المحتوى الديني كما هو معروض الآن.
+3) العنوان الرسمي (App name): «أذكار المسلم: الورد اليومي».
+
+English (fallback store language):
+
+Short (<=80): Athkar: morning/evening adhkar, duas, 99 Names, tasbeeh, Quran, daily wird.
+[الطول: 75 حرفاً ✓]
+
+Long:
+Muslim Athkar — Your Complete Daily Wird (Audio & Text)
+
+An offline app that gathers daily worship content in one place: authentic supplications and adhkar, organized and categorized, with Arabic audio narration, beautiful shareable cards and favorites.
+
+Features:
+- Morning & evening adhkar plus adhkar for every occasion with an interactive counter.
+- 90+ authentic duas (Quranic & prophetic) with benefits and references.
+- The 99 Beautiful Names of Allah with brief explanation, virtue and source.
+- Ruqyah (spiritual recitation): organized Quran verses and prophetic duas with repetition counts.
+- Quran: browse surahs & verses, memorization progress, daily reading goal.
+- Digital Tasbeeh counter with subtle audio feedback.
+- Daily wird tracker with reminders & full-screen display option.
+- Prayer times for the five prayers and sunrise (multiple calculation methods, manual coordinates), Awwabin prayer one hour before Dhuhr, and the start of the last third of the night for Qiyam.
+- Notifications before each prayer and an adhan sound when the time enters (works even when the app is closed).
+- A home-screen widget showing the next prayer and the remaining time, refreshed every minute.
+- Share: copy text, export as a beautiful Arabic card, or share via WhatsApp, Telegram and more.
+- Smart Arabic search that ignores diacritics and letter variants.
+- Favorites for quick access to your most used adhkar.
+- Works offline — no internet required.
+
+This app is for spiritual practice and religious content only; it does not provide medical treatment.
