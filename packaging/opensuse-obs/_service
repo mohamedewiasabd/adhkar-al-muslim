@@ -1,0 +1,16 @@
+<services>
+  <service name="obs_scm" mode="manual">
+    <param name="url">https://github.com/mohamedewiasabd/adhkar-al-muslim</param>
+    <param name="scm">git</param>
+    <param name="revision">v1.9.16</param>
+    <param name="filename">adhkar-al-muslim</param>
+    <param name="extract">src-tauri</param>
+    <param name="versionformat">@PARENT_TAG_OFFSET@</param>
+  </service>
+  <service name="tar" mode="manual"/>
+  <service name="recompress" mode="manual">
+    <param name="file">*.tar</param>
+    <param name="compression">xz</param>
+  </service>
+  <service name="set_version" mode="manual"/>
+</services>

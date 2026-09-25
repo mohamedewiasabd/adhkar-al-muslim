@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.muslim.adhkar.wird</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LicenseRef-proprietary</project_license>
+  <name>أذكار المسلم - الورد اليومي</name>
+  <name xml:lang="en">Muslim Athkar - Daily Wird</name>
+  <summary>أذكار الصباح والمساء، أدعية مأثورة، أسماء الله الحسنى، قرآن، مسبحة ومواقيت الصلاة</summary>
+  <summary xml:lang="en">Morning &amp; evening adhkar, duas, the 99 Names, Quran, tasbeeh &amp; prayer times</summary>
+  <description>
+    <p>
+      تطبيق متكامل يجمع ما يحتاجه المسلم يومياً في مكان واحد: أذكار وأدعية مأثورة مرتبة ومصنفة،
+      مع الاستماع بالصوت العربي وأدوات مشاركة وتصدير، ويعمل دون اتصال بالإنترنت.
+    </p>
+    <p>المميزات:</p>
+    <ul>
+      <li>أذكار الصباح والمساء وكل المناسبات مع عدّاد تفاعلي.</li>
+      <li>أكثر من 90 دعاءً مأثوراً (قرآني ونبوي) مشروحاً بفضله ومصدره.</li>
+      <li>أسماء الله الحسنى التسعة والتسعون مع شرح مختصر وبطاقة وِرد اليوم.</li>
+      <li>الرقية الشرعية مرتّبة مرحلياً مع عدد التكرار.</li>
+      <li>القرآن الكريم: تصفّح السور والآيات وتتبّع الحفظ وهدف يومي.</li>
+      <li>مسبحة إلكترونية سلسة.</li>
+      <li>الورد اليومي مع إشعارات تذكير وعرض ملء الشاشة.</li>
+      <li>مواقيت الصلاة والأذان بعدة طرق حساب، وأذان صوتي عند دخول الوقت.</li>
+      <li>مشاركة وتصدير النصوص كبطاقات صور عبر واتساب وتيليجرام وغيرهما.</li>
+      <li>بحث ذكي بالعربية ومفضلة ووضع عمل دون إنترنت.</li>
+    </ul>
+    <p>التطبيق لأغراض الذكر والدعاء والطمأنينة الروحية فقط، ولا يقدّم علاجاً طبياً.</p>
+  </description>
+  <launchable type="desktop-id">com.muslim.adhkar.wird.desktop</launchable>
+  <developer_name>Mohamed Ewias Abd</developer_name>
+  <url type="homepage">https://github.com/mohamedewiasabd/adhkar-al-muslim</url>
+  <url type="vcs-browser">https://github.com/mohamedewiasabd/adhkar-al-muslim</url>
+  <url type="bugtracker">https://github.com/mohamedewiasabd/adhkar-al-muslim/issues</url>
+  <screenshots>
+    <screenshot type="default">
+      <caption>الشاشة الرئيسية — أذكار الصباح</caption>
+      <image type="source">https://raw.githubusercontent.com/mohamedewiasabd/adhkar-al-muslim/main/release/play-assets/screenshots/01-home-adhkar-morning.png</image>
+      <image type="source">https://raw.githubusercontent.com/mohamedewiasabd/adhkar-al-muslim/main/release/play-assets/screenshots/02-home-adhkar-cards.png</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-cartoon">none</content_attribute>
+    <content_attribute id="violence-fiction">none</content_attribute>
+    <content_attribute id="violence-realistic">none</content_attribute>
+    <content_attribute id="violence-bloodshed">none</content_attribute>
+    <content_attribute id="violence-sexual">none</content_attribute>
+    <content_attribute id="drugs-alcohol">none</content_attribute>
+    <content_attribute id="drugs-narcotics">none</content_attribute>
+    <content_attribute id="drugs-tobacco">none</content_attribute>
+    <content_attribute id="sex-nudity">none</content_attribute>
+    <content_attribute id="sex-themes">none</content_attribute>
+    <content_attribute id="sex-homosexuality">none</content_attribute>
+    <content_attribute id="sex-prostitution">none</content_attribute>
+    <content_attribute id="sex-adultery">none</content_attribute>
+    <content_attribute id="sex-appearance">none</content_attribute>
+    <content_attribute id="language-profanity">none</content_attribute>
+    <content_attribute id="language-humor">none</content_attribute>
+    <content_attribute id="language-discrimination">none</content_attribute>
+    <content_attribute id="social-chat">none</content_attribute>
+    <content_attribute id="social-info">none</content_attribute>
+    <content_attribute id="social-audio">none</content_attribute>
+    <content_attribute id="money-purchasing">none</content_attribute>
+    <content_attribute id="money-gambling">none</content_attribute>
+    <content_attribute id="money-lowAmount">none</content_attribute>
+  </content_rating>
+  <releases>
+    <release version="1.9.16" date="2026-09-25"/>
+  </releases>
+</component>

@@ -1,20 +1,145 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+
+<img src="https://raw.githubusercontent.com/mohamedewiasabd/adhkar-al-muslim/main/release/play-assets/feature-graphic-1024x500.png" alt="أذكار المسلم - الورد اليومي" width="820"/>
+
+# أذكار المسلم — الورد اليومي
+
+> تطبيق شامل ومجاني يعمل دون إنترنت: أذكار وأدعية مأثورة، أسماء الله الحسنى، الرقية الشرعية، القرآن الكريم، مسبحة، مواقيت الصلاة والأذان، وورد يومي متتبَّع.
+
+[🌐 جرّبه على الويب](#الموقع) • [📲 التنزيل على هاتفك](#هواتف-ايفون-واندرويد) • [💻 التنزيل على الكمبيوتر](#أجهزة-الكمبيوتر) • [🐧 التنزيل على لينكس حسب التوزيعة](#تنزيل-على-لينكس-حسب-التوزيعة)
+
 </div>
 
-# Run and deploy your AI Studio app
+---
 
-This contains everything you need to run your app locally.
+## محتويات
 
-View your app in AI Studio: https://ai.studio/apps/80046326-e6b0-45bc-83b7-82df609fa2d0
+- [عن التطبيق](#عن-التطبيق)
+- [المميزات](#المميزات)
+- [الموقع](#الموقع)
+- [التنزيل](#التنزيل)
+  - [هواتف ايفون وأندرويد](#هواتف-ايفون-واندرويد)
+  - [أجهزة الكمبيوتر](#أجهزة-الكمبيوتر)
+  - [تنزيل على لينكس حسب التوزيعة](#تنزيل-على-لينكس-حسب-التوزيعة)
+- [البناء من المصدر](#البناء-من-المصدر)
+- [الترخيص](#الترخيص)
 
-## Run Locally
+---
 
-**Prerequisites:**  Node.js
+## عن التطبيق
 
+«أذكار المسلم - الورد اليومي» برنامج يجمع ما يحتاجه المسلم يومياً في مكان واحد، بواجهة أنيقة متوافقة مع العربية (RTL)، وأداء سريع، ودعم كامل للعمل دون اتصال:
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- **منصات جوال:** أندرويد (APK / Play Store) وايفون/ايباد (تطبيق أصلي مبني بمحرك Capacitor).
+- **منصات كمبيوتر:** ويندوز، ماك (Apple Silicon + Intel)، **ولينكس** (deb / AppImage / Flatpak) — مبنية بمحرك **Tauri 2** لخفّتها وسرعتها.
+- **ويب:** نسخة متصفح قابلة للنشر على أي استضافة ساكنة، متاحة حالياً عبر **Firebase Hosting**.
+
+## المميزات
+
+| | |
+| --- | --- |
+| 🔹 **أذكار الصباح والمساء** | وكل المناسبات (النوم، الاستيقاظ، بعد الصلاة، الأكل، السفر…) مع عدّاد تفاعلي. |
+| 🔹 **أدعية مأثورة (+90 دعاء)** | قرآنية ونبوية مصنّفة، كل دعاء بفضله ومصدره. |
+| 🔹 **أسماء الله الحسنى** | 99 اسمًا مع الشرح والفضل، وبطاقة «وِرد اليوم» تتغيّر يومياً. |
+| 🔹 **الرقية الشرعية** | آيات وأدعية مرتبة مرحلياً مع عدد التكرار وآدابها. |
+| 🔹 **القرآن الكريم** | تصفّح السور والآيات، تتبّع الحفظ، وهدف قراءة يومي. |
+| 🔹 **المسبحة والتسبيح** | عدّاد سلس مع خلفية صوتية ناعمة ومؤشر تقدّم. |
+| 🔹 **الورد اليومي** | تتبّع أدائك اليومي مع إشعارات تذكير وعرض ملء الشاشة. |
+| 🔹 **مواقيت الصلاة والأذان** | خمس صلوات والشروق بعدة طرق حساب، صلاة الأوابين، وبداية الثلث الأخير من الليل، مع أذان صوتي يعمل بعد إغلاق التطبيق و«ويدجت» للصلاة القادمة. |
+| 🔹 **مشاركة وتصدير** | نسخ النص، تصديره كبطاقة صورة جذابة، أو المشاركة عبر واتساب وتيليجرام وغيرهما. |
+| 🔹 **بحث ذكي بالعربية** | يتجاهل التشكيل ويتحمّل اختلاف الكتابة. |
+| 🔹 **مفضلة** | وصول سريع للأذكار والأدعية الأكثر استخداماً. |
+
+> التطبيق لأغراض الذكر والدعاء والطمأنينة الروحية فقط، ولا يقدّم علاجاً طبياً.
+
+## الموقع
+
+نسخة الويب منشورة على **Firebase Hosting** وتعمل مباشرة من المتصفح (تحدَّث «معرّف مشروع Firebase» عند أول نشر):
+
+```
+https://<project-id>.web.app
+```
+
+- أمَر النشر الوحيد: `npm run build && firebase deploy`
+- ملف `public/app-ads.txt` يُرفع تلقائياً إلى جذر الموقع لإعلانات **AdMob** على الدومين.
+
+## التنزيل
+
+### هواتف ايفون وأندرويد
+
+| المنصة | المصدر | الحالة |
+| --- | --- | --- |
+| **أندرويد** | [أحدث ملف APK من GitHub Releases](https://github.com/mohamedewiasabd/adhkar-al-muslim/releases) | ✅ جاهز |
+| **أندرويد** | Google Play Store | 🚧 قيد المراجعة |
+| **ايفون / ايباد** | App Store / TestFlight | 🚧 يتطلب توقيع Apple (أسرار CI) |
+
+### أجهزة الكمبيوتر
+
+| نظام | الملف | الحالة |
+| --- | --- | --- |
+| **ويندوز 10/11** | `adhkar-al-muslim_{VERSION}_x64-setup.exe` أو `.msi` | ✅ جاهز (من GitHub Releases) |
+| **ماك — Apple Silicon** | `adhkar-al-muslim_{VERSION}_aarch64.dmg` | ✅ جاهز |
+| **ماك — Intel** | `adhkar-al-muslim_{VERSION}_x64.dmg` | ✅ جاهز |
+| **لينكس** | `.deb` + `.AppImage` | ✅ جاهز (من GitHub Releases) |
+| **كل التوزيعات** | Flatpak | 🚧 قيد التسجيل على Flathub — **[مشاركة على Flathub](https://flathub.org/apps/com.muslim.adhkar.wird)** |
+
+> جميع النواتج تُبنى تلقائياً عبر GitHub Actions (سطرا العمل `desktop.yml` و`ios.yml`) واسم كل ملف يتضمن رقم الإصدار لسهولة التحديث.
+
+### تنزيل على لينكس حسب التوزيعة
+
+#### Ubuntu / Debian / Linux Mint (حزمة deb)
+```bash
+# التنزيل من GitHub Releases ثم التثبيت:
+sudo apt install ./adhkar-al-muslim_*_amd64.deb
+```
+(قريباً عبر PPA: `sudo add-apt-repository ppa:<المستخدم>/adhkar-muslim && sudo apt update && sudo apt install adhkar-al-muslim`)
+
+#### Fedora / RHEL / Rocky (حزمة rpm عبر COPR)
+كل ما يلزم موجود في `packaging/fedora-copr/`؛ بعد التفعيل:
+```bash
+sudo dnf copr enable <المستخدم>/adhkar-muslim
+sudo dnf install adhkar-al-muslim
+```
+
+#### Arch / Manjaro (AUR)
+```bash
+# عبر الأداة المفضلة لديك، مثال yay:
+yay -S adhkar-al-muslim-bin
+```
+(PKGBUILD جاهز في `packaging/arch-aur/` للرفع إلى aur.archlinux.org)
+
+#### openSUSE (OBS) وفروعها
+مواصفات `spec` و`dsc` جاهزة في `packaging/opensuse-obs/` للرفع إلى build.opensuse.org ثم:
+```bash
+sudo zypper install adhkar-al-muslim
+```
+
+#### أي توزيعة (AppImage / Flatpak)
+```bash
+# AppImage:
+chmod +x adhkar-al-muslim_*_amd64.AppImage && ./adhkar-al-muslim_*_amd64.AppImage
+
+# أو Flatpak (عبر Flathub بعد التسجيل):
+flatpak install flathub com.muslim.adhkar.wird
+```
+
+> النشر النهائي في PPA/COPR/AUR/OBS يتطلب حسابات مطوّر على كل منصة؛ الملفات والتعليمات جاهزة في مجلد [`packaging/`](packaging/) وخطوات الإطلاق موثّقة فيه.
+
+## البناء من المصدر
+
+```bash
+# 1) Node 22 (ضروري لـ Capacitor 8)
+# 2) تثبيت الاعتماديات
+npm install
+# 3) تشغيل الويب للتطوير
+npm run dev
+# 4) الفحص والبناء الإنتاجي
+npm run lint
+npm run build
+```
+
+**سطح المكتب (Tauri):** يتطلب Rust ومكتبات `webkit2gtk-4.1` على لينكس، ثم `npm run desktop:build` (أو `npm run desktop:build:linux`). التفاصيل الكاملة في [`AGENTS.md`](AGENTS.md).
+
+## الترخيص
+
+جميع الحقوق محفوظة للمطوّر. يُنشر التطبيق مجاناً عبر المتاجر الرسمية. (لم تُحدَّد رخصة مفتوحة المصدر بعد.)

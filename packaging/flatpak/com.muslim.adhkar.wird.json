@@ -1,0 +1,49 @@
+{
+  "id": "com.muslim.adhkar.wird",
+  "runtime": "org.gnome.Platform",
+  "runtime-version": "48",
+  "sdk": "org.gnome.Sdk",
+  "command": "adhkar-al-muslim",
+  "finish-args": [
+    "--share=ipc",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--share=network",
+    "--socket=pulseaudio",
+    "--device=dri",
+    "--talk-name=org.freedesktop.Notifications"
+  ],
+  "modules": [
+    {
+      "name": "adhkar-al-muslim",
+      "buildsystem": "simple",
+      "build-commands": [
+        "chmod +x Adhkar.AppImage",
+        "./Adhkar.AppImage --appimage-extract",
+        "install -Dm755 squashfs-root/usr/bin/adhkar-al-muslim /app/bin/adhkar-al-muslim",
+        "install -Dm644 squashfs-root/usr/share/applications/*.desktop /app/share/applications/adhkar-al-muslim.desktop || true",
+        "install -Dm644 com.muslim.adhkar.wird.desktop /app/share/applications/com.muslim.adhkar.wird.desktop",
+        "install -Dm644 com.muslim.adhkar.wird.metainfo.xml /app/share/metainfo/com.muslim.adhkar.wird.metainfo.xml",
+        "find squashfs-root/usr/share/icons -name '*.png' -exec install -Dm644 {} /app/share/icons/hicolor/512x512/apps/com.muslim.adhkar.wird.png \\; || true",
+        "install -Dm644 com.muslim.adhkar.wird.png /app/share/icons/hicolor/512x512/apps/com.muslim.adhkar.wird.png"
+      ],
+      "sources": [
+        {
+          "type": "file",
+          "only-arches": ["x86_64"],
+          "url": "https://github.com/mohamedewiasabd/adhkar-al-muslim/releases/download/v1.9.16/adhkar-al-muslim_1.9.16_amd64.AppImage",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "dest-filename": "Adhkar.AppImage",
+          "x-checker-data": {
+            "type": "json",
+            "url": "https://api.github.com/repos/mohamedewiasabd/adhkar-al-muslim/releases/latest",
+            "tag-version": "^v(\\d+\\.\\d+\\.\\d+)$",
+            "url-query": "$.assets[?(@.name =~ /.*_amd64\\.AppImage$/)].browser_download_url",
+            "tag-query": "$.tag_name",
+            "timestamp-query": ".published_at"
+          }
+        }
+      ]
+    }
+  ]
+}

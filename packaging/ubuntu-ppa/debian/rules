@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_build:
+	npm ci --no-audit --no-fund
+	npm run lint
+	npm run build
+	cd src-tauri && cargo build --release --locked
+
+override_dh_auto_install:
+	install -Dm755 src-tauri/target/release/adhkar-al-muslim debian/adhkar-al-muslim/usr/bin/adhkar-al-muslim
+	install -Dm644 src-tauri/icons/128x128.png debian/adhkar-al-muslim/usr/share/icons/hicolor/128x128/apps/com.muslim.adhkar.wird.png
+	install -Dm644 packaging/flatpak/com.muslim.adhkar.wird.desktop debian/adhkar-al-muslim/usr/share/applications/com.muslim.adhkar.wird.desktop
+	install -Dm644 packaging/flatpak/com.muslim.adhkar.wird.metainfo.xml debian/adhkar-al-muslim/usr/share/metainfo/com.muslim.adhkar.wird.metainfo.xml

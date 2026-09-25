@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=أذكار المسلم - الورد اليومي
+Name[en]=Muslim Athkar - Daily Wird
+Comment=أذكار الصباح والمساء، أدعية، أسماء الله الحسنى، قرآن، مسبحة ومواقيت الصلاة
+Comment[en]=Morning & evening adhkar, duas, the 99 Names, Quran, tasbeeh & prayer times
+Exec=adhkar-al-muslim
+Icon=com.muslim.adhkar.wird
+Terminal=false
+Categories=Utility;Education;Religion;
+Keywords=Adhkar;Athkar;Duas;Quran;Tasbeeh;Prayer;Islamic;
+Keywords[ar]=أذكار;دعاء;قرآن;تسبيح;صلاة;ورد;
+StartupNotify=true

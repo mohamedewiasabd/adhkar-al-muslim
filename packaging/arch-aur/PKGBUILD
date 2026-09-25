@@ -1,0 +1,32 @@
+# Maintainer: Mohamed Ewias Abd <mohamedewiasabd@example.com>
+# Contributor: Mohamed Ewias Abd
+pkgname=adhkar-al-muslim
+pkgver=1.9.16
+pkgrel=1
+pkgdesc='أذكار المسلم - الورد اليومي: أذكار وأدعية وأسماء الله الحسنى وقرآن ومسبحة ومواقيت الصلاة (Tauri)'
+arch=('x86_64')
+url='https://github.com/mohamedewiasabd/adhkar-al-muslim'
+license=('custom')
+depends=('webkit2gtk-4.1' 'gtk3' 'librsvg' 'libayatana-appindicator')
+makedepends=('nodejs-lts-iron' 'npm' 'rust' 'cargo' 'pkg-config' 'python')
+options=(!strip)   # cargo ينتج ثنائي مبني مسبقاً
+source=("$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  npm ci --no-audit --no-fund
+  npm run lint
+  npm run build
+  cd src-tauri
+  cargo build --release --locked
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  install -Dm755 src-tauri/target/release/adhkar-al-muslim "$pkgdir/usr/bin/adhkar-al-muslim"
+  install -Dm644 src-tauri/icons/128x128.png "$pkgdir/usr/share/icons/hicolor/128x128/apps/com.muslim.adhkar.wird.png"
+  install -Dm644 src-tauri/icons/128x128@2x.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/com.muslim.adhkar.wird.png"
+  install -Dm644 packaging/flatpak/com.muslim.adhkar.wird.desktop "$pkgdir/usr/share/applications/com.muslim.adhkar.wird.desktop"
+  install -Dm644 packaging/flatpak/com.muslim.adhkar.wird.metainfo.xml "$pkgdir/usr/share/metainfo/com.muslim.adhkar.wird.metainfo.xml"
+}

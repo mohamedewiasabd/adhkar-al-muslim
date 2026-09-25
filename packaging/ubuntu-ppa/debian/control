@@ -1,0 +1,18 @@
+Source: adhkar-al-muslim
+Section: misc
+Priority: optional
+Maintainer: Mohamed Ewias Abd <mohamedewiasabd@gmail.com>
+Build-Depends: debhelper (>= 13), nodejs (>= 20), npm, cargo, rustc (>= 1.77),
+               libwebkit2gtk-4.1-dev, libgtk-3-dev, librsvg2-dev,
+               libayatana-appindicator3-dev, libssl-dev, pkg-config
+Standards-Version: 4.6.2
+Homepage: https://github.com/mohamedewiasabd/adhkar-al-muslim
+Vcs-Git: https://github.com/mohamedewiasabd/adhkar-al-muslim.git
+
+Package: adhkar-al-muslim
+Architecture: amd64
+Depends: ${misc:Depends}, libwebkit2gtk-4.1-0, libgtk-3-0, librsvg2-2
+Description: أذكار المسلم - الورد اليومي (Muslim Athkar - Daily Wird)
+ تطبيق متكامل يجمع أذكار الصباح والمساء، أدعية مأثورة، أسماء الله الحسنى،
+ الرقية الشرعية، القرآن الكريم، مسبحة، مواقيت الصلاة والورد اليومي،
+ ويعمل دون اتصال بالإنترنت. مبني بمحرك Tauri 2.

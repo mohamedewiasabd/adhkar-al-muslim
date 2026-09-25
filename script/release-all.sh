@@ -218,4 +218,37 @@ else
   log "الخطوة 6 — الجلب متخطَّى (ADHKAR_FETCH_CI=0)"
 fi
 
+# ── الخطوة 7: نشر GitHub Release وإرفاق النواتج (اختياري، غير فاشل) ────
+publish_github_release() {
+  local TOKEN API TAG ID UPLOAD enc f name
+  TOKEN="$(sed -nE 's_https://[^/@]*:([^/@]+)@github\.com.*_\1_p' ~/.git-credentials 2>/dev/null | head -1)"
+  [ -z "$TOKEN" ] && { printf '  (لا توكن — تخطي GitHub Release)\n'; return 0; }
+  API="https://api.github.com/repos/$REPO/releases"
+  TAG="v$VERSION"
+  ID="$(curl -s -H "Authorization: Bearer $TOKEN" "$API/tags/$TAG" | jq -r '.id // empty')"
+  if [ -z "$ID" ]; then
+    BODY="$([ "$skip_bump" = "0" ] && echo "إصدار تلقائي جديد من البروتوكول الإلزامي." || echo "إعادة رفع نواتج الإصدار $VERSION (تحقق/جلب).")"
+    ID="$(curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+          -d "{\"tag_name\":\"$TAG\",\"name\":\"$TAG\",\"body\":\"$BODY\nالتحقق: راجع release/checksums.txt\",\"draft\":false,\"prerelease\":false}" \
+          "$API" | jq -r '.id // empty')"
+  fi
+  [ -z "$ID" ] && { printf '  ⚠ تعذر إعداد GitHub Release\n'; return 0; }
+  UPLOAD="https://uploads.github.com/repos/$REPO/releases/$ID/assets?name="
+  # نواتج يتبعها نسخها: checksums + apk / aab / debug + سطح المكتب (لينكس-ويندوز-ماك)
+  FILES=( "$ROOT/release/checksums.txt"
+          "$APK/$APK_RELEASE" "$PLAY/$AAB_PLAY" "$APK/$APK_DEBUG" )
+  while read -r f; do [ -n "$f" ] && FILES+=("$f"); done < <(
+    find "$ROOT/release/desktop" -type f \( -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' -o -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \) 2>/dev/null | sort )
+  for f in "${FILES[@]}"; do
+    [ -f "$f" ] || continue
+    name="$(basename "$f")"
+    enc="$(python3 -c 'import sys,urllib.parse;print(urllib.parse.quote(sys.argv[1]))' "$name")"
+    curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/octet-stream" \
+      --data-binary "@$f" "$UPLOAD$enc" | jq -e '.id' >/dev/null 2>&1 \
+      && printf '  ✓ إرفاق: %s\n' "$name" || printf '  ⚠ فشل رفع: %s (موجود مسبقاً؟)\n' "$name"
+  done
+  printf '  → https://github.com/%s/releases/tag/%s\n' "$REPO" "$TAG"
+}
+publish_github_release || true
+
 printf '\n\033[1;32m═══ إتمام البروتوكول الإلزامي بالكامل — الإصدار %s (versionCode %s) ═══\033[0m\n' "$VERSION" "$VCODE"

@@ -5,10 +5,10 @@
 ## ١) هوية المشروع
 
 - تطبيق «أذكار المسلم - الورد اليومي» — Capacitor 8 + React 19 + Vite 6 + Tailwind 4 (CSS) + TypeScript + Tauri 2 (سطح المكتب).
-- المستودع (خاص): `https://github.com/mohamedewiasabd/adhkar-al-muslim` — الفرع `main`.
+- المستودع (عام): `https://github.com/mohamedewiasabd/adhkar-al-muslim` — الفرع `main`.
 - المعرّف: `com.muslim.adhkar.wird` — اسم التطبيق: «أذكار المسلم - الورد اليومي».
 - **تصعيد الإصدار تلقائي وإجباري مع كل إصدار** — الخطوة 0 في `script/release-all.sh` ترفع `versionCode` بـ +1 وتصعّد `versionName` (patch افتراضيًا) في ملفات: `android/app/build.gradle`، `src-tauri/tauri.conf.json`، و`ios/App/App.xcodeproj/project.pbxproj` (MARKETING_VERSION). أسماء ملفات النواتج تتبع الرقم تلقائيًا (مثل `أذكار-المسلم-v1.9.15-release.apk` و`adhkar-al-muslim_1.9.15_amd64.deb`). أسباب عدم التصعيد المشروعة فقط: خطاف `post-commit` (`ADHKAR_RELEASE=1`)، `ADHKAR_SKIP_BUMP=1`، أو وضع `ADHKAR_FETCH_ONLY=1`.
-- الويب: مخرجات `dist/` قابلة للنشر على أي استضافة ساكنة (Vercel/Netlify/GitHub Pages).
+- الويب: مخرجات `dist/` قابلة للنشر على أي استضافة ساكنة (Vercel/Netlify/GitHub Pages) — النشر الحالي عبر **Firebase Hosting**: `firebase.json` يخدم مجلد `dist/` (بما فيه `app-ads.txt` على جذر الدومين لإعلانات AdMob).
 
 ## ٢) مصفوفة المنصات والحالة الفعلية
 
@@ -23,7 +23,7 @@
 | macOS سطح المكتب | عبر CI ✅ | `release/desktop/macos/` — `_aarch64.dmg` (Apple Silicon) + `_x64.dmg` (Intel) (CI `desktop.yml`) |
 | iOS (ايفون/ايباد) | البناء ينجح عبر CI ✅ (منتج `.app` غير مُوقَّع) | `release/ipa/` — **IPA مُوقَّع** يتطلب أسرار Apple (انظر بند ٣) |
 
-> أسماء ملفات النواتج **تتبع رقم الإصدار تلقائيًا** مع كل تشغيل — الأسماء أعلاه للنسخة الحالية (1.9.14).
+> أسماء ملفات النواتج **تتبع رقم الإصدار تلقائيًا** مع كل تشغيل — الأسماء أعلاه للنسخة الحالية (1.9.15).
 
 - **Windows/macOS/iOS تُبني عبر GitHub Actions** (سطور العمل `desktop.yml` و`ios.yml`) لأن بيئة العمل هذه بنظام Linux لا تملك مكتبات webkit2gtk (تتطلب sudo) ولا Xcode.
 - الـ Linux محليًا يتطلب أولًا: `sudo apt install libwebkit2gtk-4.1-dev build-essential libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev` ثم `npm run desktop:build:linux`.
@@ -41,7 +41,7 @@
 5. الإعلانات: معرّفات AdMob الحقيقية في `package.json` (`admob.androidAppId` / `iosAppId` / `enableNativeAds`). لا توجد بيئة `VITE_ADS_TEST_MODE` في هذا المشروع.
 6. بنية سطح المكتب متاحة في `src-tauri/` (Tauri v2) ومنصة ايفون في `ios/` (Capacitor 8 مع SPM عبر `CapApp-SPM`) — كلاهما يعتمد نفس ويب `dist/`.
 7. **iOS في Capacitor 8.5+**: حزمة `capacitor-swift-pm` الثنائية مبنية مع العلم التجريبي `NonescapableTypes`؛ سطر العمل `ios.yml` يضم خطوة "Patch plugins Swift API" تُحقن هذا العلم في `Package.swift` لمكونات: `app`، `filesystem`، `share`، `local-notifications` (المسار `ios/Sources/LocalNotificationsPlugin`) و`capacitor-admob-nextgen` (المسار `ios/Sources/AdMobNextGenPlugin` — يُستبدل بصيغة `, swiftSettings: ...` قبل معامل `resources`) — لا تُلغِ هذه الخطوة.
-8. **Desktop CI**: لا يُستخدم `tauri-apps/tauri-action` — البناء المباشر عبر `npm run tauri -- build [--target X]`، ورفع الأرتيفاكتات من `src-tauri/target/*/release/bundle/**` (مسار يغطي الرؤوس المتقاطعة على Mac).
+8. **Desktop CI**: لا يُستخدم `tauri-apps/tauri-action` — البناء المباشر عبر `npm run tauri -- build [--target X]`. تجميع الحزم للرفع يتم بـ`find src-tauri/target -type f -path '*/release/bundle/*'` (يغطي البنية المزدوجة لرؤوس ماك `target/<triple>/release/bundle` والبنية المفردة `target/release/bundle` للينكس/ويندوز)، ثم رفع من `dist-artifacts/`.
 
 ## ٤) البروتوكول الإلزامي بعد كل تعديل (بالترتيب)
 
@@ -121,5 +121,20 @@ git push origin main
 - عند كل إصدار يتصاعد الرقم تلقائيًا (الخطوة 0) — أسماء الملفات في البند ٢ تتبع الرقم الجديد، وأبلغ المستخدم بالإصدار الجديد وقيمة `versionCode` قبل الإرسال إلى بلاي ستور.
 
 ## ٦) مواضع الملفات
-- تُرفع: `src/`، `android/` (عدا الأسرار)، `src-tauri/`، `ios/`، `.github/workflows/`، `index.html`، إعدادات البناء (`capacitor.config.ts`، `package.json`، `vite.config.ts`، `tsconfig.json`)، `script/`، `release/checksums.txt`، `release/play-assets/` (صور ومستندات المتجر).
+- تُرفع: `src/`، `android/` (عدا الأسرار)، `src-tauri/`، `ios/`، `.github/workflows/`، `index.html`، إعدادات البناء (`capacitor.config.ts`، `package.json`، `vite.config.ts`، `tsconfig.json`)، `script/`، `release/checksums.txt`، `release/play-assets/` (صور ومستندات المتجر)، `public/app-ads.txt`، `firebase.json`، `packaging/` (حزم التوزيعات).
 - لا تُرفع (محجوبة في `.gitignore`): `android/key.properties`، `android/local.properties`، `android/keystore/`، ملفات `.env`، `node_modules/` و`dist/`، و`release/apk/`، `release/play/`، `release/desktop/`، `release/ipa/`.
+
+## ٧) النشر الإضافي
+
+### الويب وApp-ads.txt (AdMob)
+- `firebase.json` يخدم `dist/` (بعد `npm run build`) بأمر واحد: `firebase deploy`. دومين الموقع: `https://<project-id>.web.app`.
+- `public/app-ads.txt` يُنسخ تلقائيًا إلى `dist/app-ads.txt` (جذر الدومين) — وهو إلزامي لإعلانات AdMob:
+  `google.com, pub-6559329089674801, DIRECT, f08c47fec0942fa0`
+  (يتطابق مع `admob.androidAppId: ca-app-pub-6559329089674801~6363163092` في `package.json`).
+
+### Flathub
+- مستودع الـManifest منفصل وعام: `https://github.com/mohamedewiasabd/com.muslim.adhkar.wird` (الفرع `main`) يحوي `com.muslim.adhkar.wird.json` + `com.muslim.adhkar.wird.metainfo.xml` + أيقونات 128/512.
+- مصدر البناء = مستودع التطبيق `adhkar-al-muslim` عند الوسم `v{VERSION}`. تسجيل التطبيق يتم من حساب المطوّر على `flathub.org/apps/add` (حساب GitHub الموصول).
+
+### مستودعات التوزيعات (في انتظار حسابات المطوّر)
+- `packaging/` يضم ما يلزم لـ: Ubuntu/Debian (PPA)، Fedora (COPR: rpm spec)، Arch (AUR: PKGBUILD)، openSUSE (OBS: spec+dsc). لا يمكن النشر النهائي دون حسابات مستخدم — تُنفَّذ خطوات النشر من المواقع الرسمية عند توفّرها.
