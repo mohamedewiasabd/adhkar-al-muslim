@@ -17,9 +17,10 @@
     "tauri": "tauri",
     "desktop:dev": "tauri dev",
     "desktop:build": "tauri build",
-    "desktop:build:linux": "tauri build --bundles deb,appimage",
-    "ios:sync": "npm run build && cap sync ios",
-    "release": "bash script/release-all.sh"
+"desktop:build:linux": "tauri build --bundles deb,appimage",
+  "ios:sync": "npm run build && cap sync ios",
+  "deploy:web": "npm run build && npx firebase-tools deploy --only hosting",
+  "release": "bash script/release-all.sh"
   },
   "admob": {
     "androidAppId": "ca-app-pub-6559329089674801~6363163092",
