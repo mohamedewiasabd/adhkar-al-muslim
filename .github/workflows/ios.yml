@@ -47,10 +47,13 @@ jobs:
             // capacitor-admob-nextgen: البنّاء يصطّر resources قبل swiftSettings — نحقنه بعد إغلاق resources
             const admob = "node_modules/capacitor-admob-nextgen/Package.swift";
             let sa = readFileSync(admob, "utf8");
-            const admobFrom = "ios/Sources/AdMobNextGenPlugin\",\n            resources: [\n                // ADMOB_NATIVE_RESOURCES_START\n\n    // ADMOB_NATIVE_RESOURCES_END\n            ]\n          ),";
-            const admobTo   = "ios/Sources/AdMobNextGenPlugin\",\n            resources: [\n                // ADMOB_NATIVE_RESOURCES_START\n\n    // ADMOB_NATIVE_RESOURCES_END\n            ],\n            swiftSettings: [.enableExperimentalFeature(\"NonescapableTypes\")]\n          ),";
-            if (!sa.includes(admobFrom)) throw new Error("admob-nextgen Package.swift shape changed — update patch");
-            sa = sa.replace(admobFrom, admobTo);
+            const aFrom  = "ios/Sources/AdMobNextGenPlugin\",\n            resources: [\n                // ADMOB_NATIVE_RESOURCES_START\n                // ADMOB_NATIVE_RESOURCES_END\n            ]\n          ),";
+            const aFrom2 = "ios/Sources/AdMobNextGenPlugin\",\n            resources: [\n                // ADMOB_NATIVE_RESOURCES_START\n\n    // ADMOB_NATIVE_RESOURCES_END\n            ]\n          ),";
+            const aTo    = "ios/Sources/AdMobNextGenPlugin\",\n            resources: [\n                // ADMOB_NATIVE_RESOURCES_START\n                // ADMOB_NATIVE_RESOURCES_END\n            ],\n            swiftSettings: [.enableExperimentalFeature(\"NonescapableTypes\")]\n          ),";
+            const aTo2   = "ios/Sources/AdMobNextGenPlugin\",\n            resources: [\n                // ADMOB_NATIVE_RESOURCES_START\n\n    // ADMOB_NATIVE_RESOURCES_END\n            ],\n            swiftSettings: [.enableExperimentalFeature(\"NonescapableTypes\")]\n          ),";
+            if (sa.includes(aFrom))       sa = sa.replace(aFrom, aTo);
+            else if (sa.includes(aFrom2)) sa = sa.replace(aFrom2, aTo2);
+            else throw new Error("admob-nextgen Package.swift shape changed — update patch");
             writeFileSync(admob, sa);
             console.log("patched 5 plugin Package.swift files");
           '

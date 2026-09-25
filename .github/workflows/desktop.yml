@@ -63,7 +63,9 @@ jobs:
         shell: bash
         run: |
           mkdir -p dist-artifacts
-          find src-tauri/target/*/release/bundle -type f \( -name '*.deb' -o -name '*.rpm' -o -name '*.AppImage' -o -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \) -exec cp {} dist-artifacts/ \; 2>/dev/null || true
+          find src-tauri/target -type f -path '*/release/bundle/*' \
+            \( -name '*.deb' -o -name '*.rpm' -o -name '*.AppImage' -o -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \) \
+            -exec cp {} dist-artifacts/ \; 2>/dev/null || true
           ls -la dist-artifacts
 
       - name: Upload artifacts
