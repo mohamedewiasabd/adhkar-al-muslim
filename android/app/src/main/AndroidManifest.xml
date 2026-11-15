@@ -202,6 +202,31 @@
             android:enabled="true"
             android:exported="false" />
 
+        <!-- المجدول الأصلي الدائم: إشعارات الأذكار والصلاة + تجديد يومي -->
+        <receiver
+            android:name=".NativeAlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.muslim.adhkar.wird.NATIVE_SCHED_FIRE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- استعادة الجدولة بعد الإقلاع أو تغيّر الوقت/التاريخ/المنطقة الزمنية -->
+        <receiver
+            android:name=".SchedulerBootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
         <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-6559329089674801~6363163092" />
     </application>
 

@@ -8,6 +8,7 @@ import {
   prayerNotificationStatus, requestPrayerNotificationPermission, schedulePrayerNotifications
 } from '../utils/prayerNotifications';
 import { canScheduleExactAlarms, requestExactAlarmPermission } from '../utils/exactAlarm';
+import { syncPrayerToNative } from '../utils/nativeScheduler';
 
 export type NotifState = 'pending' | 'granted' | 'denied';
 export type ExactState = 'pending' | 'granted' | 'denied';
@@ -131,6 +132,8 @@ export const usePrayerTimes = (): UsePrayerTimesResult => {
     setSettings(nextSettings);
     savePrayerSettings(nextSettings);
     pushTimesToWidget(computePrayerTimes(new Date(), nextSettings));
+    // المجدول الأصلي: يحدّث الجدولة فوراً (بلا انتظار إعادة التشغيل)
+    syncPrayerToNative(nextSettings).catch(() => {});
   }, []);
 
   const applySettings = useCallback((patch: Partial<PrayerSettings>) => {

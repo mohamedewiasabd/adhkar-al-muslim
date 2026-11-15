@@ -2,6 +2,9 @@ import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { ReminderSettings } from '../types';
 import { initialAdhkarData, quickReminderAdhkar } from '../data/adhkarData';
+import { nativeSchedulerAvailable, syncPrayerToNative, syncReminderToNative } from './nativeScheduler';
+import { loadReminderSettings } from './storage/reminders';
+import { loadPrayerSettings } from './prayerStore';
 
 const isNative = (): boolean => Capacitor.isNativePlatform();
 
@@ -79,7 +82,14 @@ export async function requestSystemNotificationPermission(): Promise<boolean> {
   if (!isNative()) return false;
   try {
     const status = await LocalNotifications.requestPermissions();
-    return (status.display as string) === 'granted';
+    const granted = (status.display as string) === 'granted';
+    // بعد منح الإذن: أعد بناء الجدولة الأصلية فوراً
+    if (granted) {
+      const settings = loadReminderSettings();
+      await syncReminderToNative(settings);
+      await syncPrayerToNative(loadPrayerSettings());
+    }
+    return granted;
   } catch {
     return false;
   }
@@ -121,9 +131,19 @@ export async function requestExactAlarmSettings(): Promise<ExactAlarmStatus> {
  * - Morning adhkar at settings.morningTime for the next 30 days
  * - Evening adhkar at settings.eveningTime for the next 30 days
  * - Periodic dhikr every settings.intervalMinutes within waking hours (next 3-7 days)
+ *
+ * On Android the native scheduler takes over: it re-arms itself after every
+ * event, so notifications keep coming for as long as the app is installed —
+ * without needing to open the app daily (and without duplicate notifications).
  */
 export async function syncSystemNotifications(settings: ReminderSettings): Promise<{ scheduled: number; exactAlarms: boolean }> {
   if (!isNative()) return { scheduled: 0, exactAlarms: false };
+  // المجدول الأصلي هو المرجع على أندرويد (يمنع التكرار ويضمن الاستمرارية)
+  if (nativeSchedulerAvailable()) {
+    const ok = await syncReminderToNative(settings);
+    if (ok) return { scheduled: 0, exactAlarms: true };
+    // فشل الاتصال بالمجدول الأصلي ⇒ نرجع للجدولة عبر JS كحل احتياطي
+  }
   try {
     // لا نطلب الإذن تلقائياً أثناء فتح التطبيق؛ الإذن يُطلب من إعدادات التذكير فقط.
     const perm = await LocalNotifications.checkPermissions();

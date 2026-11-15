@@ -76,6 +76,47 @@ export interface OurApp {
   packageName?: string;
   category?: string;
   createdAt?: string;
+  // For developer/apps comparison
+  version?: string;
+  appVersion?: string;
+  versionName?: string;
+  currentVersion?: string;
+  latestVersion?: string;
+  // Pro version
+  pro?: boolean | string;
+  isPro?: boolean;
+  proVersion?: boolean | string;
+  hasPro?: boolean;
+  النسخةالبرو?: boolean | string;
+  نسخة_البرو?: boolean | string;
+  proNotice?: string;
+  proText?: string;
+  proMessage?: string;
+  proTitle?: string;
+  proDescription?: string;
+  // Alternative app
+  alternativeApp?: OurApp | string | boolean | Record<string, any>;
+  alternative?: OurApp | string | boolean | Record<string, any>;
+  alternativeAppName?: string;
+  alternativeAppTitle?: string;
+  alternativeAppPackage?: string;
+  alternativeAppPackageName?: string;
+  alternativeAppUrl?: string;
+  alternativeUrl?: string;
+  alternativePackageName?: string;
+  alternativeStoreUrl?: string;
+  alternativeLink?: string;
+  تطبيق_بديل?: OurApp | string | boolean | Record<string, any>;
+  التطبيقالبديل?: OurApp | string | boolean | Record<string, any>;
+  forceAlternative?: boolean;
+  mandatory?: boolean;
+  isMandatory?: boolean;
+  force?: boolean;
+  updateUrl?: string;
+  updateLink?: string;
+  playStoreUrl?: string;
+  androidUrl?: string;
+  link?: string;
 }
 
 export interface DailyWirdItem {

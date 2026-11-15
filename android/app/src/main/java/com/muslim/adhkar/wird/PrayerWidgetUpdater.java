@@ -55,9 +55,17 @@ final class PrayerWidgetUpdater {
         Intent intent = new Intent(ctx, PrayerWidgetAlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(ctx, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        am.setWindow(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + UPDATE_INTERVAL_MS,
-                UPDATE_INTERVAL_MS, pi);
+        long at = SystemClock.elapsedRealtime() + UPDATE_INTERVAL_MS;
+        // مؤقّت دقيق إن سُمح ⇒ يبقى عدّاد الباقي حيّاً في وضع Doze
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
+                    && am.canScheduleExactAlarms()) {
+                am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, at, pi);
+                return;
+            }
+        } catch (SecurityException ignored) {
+        }
+        am.setWindow(AlarmManager.ELAPSED_REALTIME_WAKEUP, at, UPDATE_INTERVAL_MS, pi);
     }
 
     static void renderAll(Context ctx) {
@@ -69,6 +77,29 @@ final class PrayerWidgetUpdater {
             render(ctx, mgr, id);
         }
         scheduleUpdates(ctx);
+    }
+
+    /**
+     * يتأكّد أن المواقيت المخزَّنة تخصّ اليوم الحالي؛ وإن كانت قديمة
+     * يُعاد حسابها أصلياً (PrayerTimesCalc) فلا يحتاج المستخدم لفتح التطبيق.
+     */
+    static void ensureFreshTimes(Context ctx) {
+        try {
+            JSONObject data = loadTimes(ctx);
+            String storedDate = data.optString("date", "");
+            // المواقيت الافتراضية (لم يُضبط الموقع بعد) ⇒ لا شيء نحدّثه
+            if (storedDate.isEmpty()) return;
+            Calendar cal = Calendar.getInstance();
+            String todayKey = cal.get(Calendar.YEAR) + "-" + fmt2(cal.get(Calendar.MONTH) + 1) + "-"
+                    + fmt2(cal.get(Calendar.DAY_OF_MONTH));
+            if (storedDate.startsWith(todayKey)) return;
+            // لا نعيد الحساب أكثر من مرة في اليوم
+            SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            if (todayKey.equals(sp.getString("last_refresh", ""))) return;
+            sp.edit().putString("last_refresh", todayKey).apply();
+            NativeScheduler.pushTimesToWidget(ctx);
+        } catch (Exception ignored) {
+        }
     }
 
     private static String fmt2(int n) {
@@ -98,6 +129,7 @@ final class PrayerWidgetUpdater {
 
     private static void render(Context ctx, AppWidgetManager mgr, int widgetId) {
         RemoteViews views = new RemoteViews(ctx.getPackageName(), R.layout.widget_next_prayer);
+        ensureFreshTimes(ctx);
         JSONObject data = loadTimes(ctx);
         JSONObject times = data.optJSONObject("times");
 

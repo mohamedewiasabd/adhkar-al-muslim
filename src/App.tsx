@@ -15,6 +15,7 @@ import { ShareModal, SelectedShareable } from './components/ShareModal';
 import { OurAppsView } from './components/OurAppsView';
 import { WidgetsManagerModal } from './components/WidgetsManagerModal';
 import { PrayerTimesView } from './components/PrayerTimesView';
+import { AppsAlerts } from './components/AppsAlerts';
 import { initialDuasData } from './data/duasData';
 import { surahsList } from './data/quranMeta';
 import { bundledQuranSurahs } from './data/bundledQuran';
@@ -216,6 +217,9 @@ export default function App() {
 
       {/* Our Apps Page */}
       <OurAppsView isOpen={isOurAppsOpen} onClose={() => setIsOurAppsOpen(false)} />
+
+      {/* Developer/Apps alerts (update / pro / alternative) */}
+      <AppsAlerts />
 
       {/* Floating Widgets Manager */}
       <WidgetsManagerModal isOpen={isWidgetsOpen} onClose={() => setIsWidgetsOpen(false)} />

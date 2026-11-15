@@ -22,6 +22,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(PrayerWidgetsPlugin.class);
         registerPlugin(TasbeehWidgetsPlugin.class);
         registerPlugin(OurAppsPlugin.class);
+        registerPlugin(NativeSchedulerPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

@@ -32,8 +32,16 @@ public class WidgetsHeartbeatReceiver extends BroadcastReceiver {
         Intent intent = new Intent(context, WidgetsHeartbeatReceiver.class).setAction(ACTION_TICK);
         PendingIntent pi = PendingIntent.getBroadcast(context, 7, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        am.setWindow(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + INTERVAL_MS,
-                60_000L, pi);
+        long at = SystemClock.elapsedRealtime() + INTERVAL_MS;
+        // مؤقّت دقيق إن سُمح ⇒ يستمر التحديث حتى في وضع Doze
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
+                    && am.canScheduleExactAlarms()) {
+                am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, at, pi);
+                return;
+            }
+        } catch (SecurityException ignored) {
+        }
+        am.setWindow(AlarmManager.ELAPSED_REALTIME_WAKEUP, at, 60_000L, pi);
     }
 }

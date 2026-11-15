@@ -1,6 +1,8 @@
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { addMinutesToHM, computePrayerTimes, normalizeTimezone, PRAYER_ARABIC, PRAYER_ORDER, PrayerName, PrayerSettings, wallRoundedParts, zonedDateTimeUtc } from './prayerTimes';
+import { nativeSchedulerAvailable, syncPrayerToNative } from './nativeScheduler';
+import { loadPrayerSettings } from './prayerStore';
 
 const isNative = (): boolean => Capacitor.isNativePlatform();
 
@@ -79,7 +81,12 @@ export async function requestPrayerNotificationPermission(): Promise<boolean> {
   if (!isNative()) return false;
   try {
     const s = await LocalNotifications.requestPermissions();
-    return (s.display as string) === 'granted';
+    const granted = (s.display as string) === 'granted';
+    // بعد منح الإذن: أعد بناء الجدولة الأصلية فوراً
+    if (granted) {
+      await syncPrayerToNative(loadPrayerSettings());
+    }
+    return granted;
   } catch {
     return false;
   }
@@ -136,6 +143,12 @@ const SCHEDULE_HORIZON_DAYS = 30;
 
 export async function schedulePrayerNotifications(settings: PrayerSettings): Promise<number> {
   if (!isNative()) return 0;
+  // على أندرويد يتولّى المجدول الأصلي الجدولة (يستمر بلا فتح التطبيق يومياً)
+  if (nativeSchedulerAvailable()) {
+    const ok = await syncPrayerToNative(settings);
+    if (ok) return 0;
+    // فشل الاتصال ⇒ نرجع للجدولة عبر JS كحل احتياطي
+  }
   try {
     // لا نطلب الإذن تلقائياً عند فتح التطبيق؛ الطلب يتم فقط من شاشة «مواقيت الصلاة».
     const perm = await LocalNotifications.checkPermissions();

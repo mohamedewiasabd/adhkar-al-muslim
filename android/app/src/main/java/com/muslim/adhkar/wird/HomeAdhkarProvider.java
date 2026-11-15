@@ -25,12 +25,12 @@ abstract class HomeAdhkarProvider extends AppWidgetProvider {
 
     protected abstract int bgRes();
 
-    private String actionTap() {
-        return "com.muslim.adhkar.wird.HOME_ADHKAR_TAP" + brand();
+    private static String actionTap(String brand) {
+        return "com.muslim.adhkar.wird.HOME_ADHKAR_TAP" + brand;
     }
 
-    private String[] items() {
-        if ("evening".equals(brand())) {
+    private static String[] itemsOf(String brand) {
+        if ("evening".equals(brand)) {
             return new String[]{
                     "أعوذ بكلمات الله التامات من شر ما خلق",
                     "اللهم بك أمسينا",
@@ -46,19 +46,39 @@ abstract class HomeAdhkarProvider extends AppWidgetProvider {
         };
     }
 
-    private String todayKey() {
+    private static String todayKey() {
         return new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date());
     }
 
     @Override
     public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {
-        for (int id : ids) render(ctx, mgr, id);
+        for (int id : ids) render(ctx, mgr, id, brand(), bgRes(), getClass());
+    }
+
+    /** يعيد رسم كل ودجات أذكار الصباح/المساء (يُستدعى يومياً من المجدول الأصلي). */
+    static void renderAll(Context ctx) {
+        AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);
+        if (mgr == null) return;
+        renderFor(ctx, mgr, HomeMorningAdhkarProvider.class, "morning");
+        renderFor(ctx, mgr, HomeEveningAdhkarProvider.class, "evening");
+    }
+
+    private static void renderFor(Context ctx, AppWidgetManager mgr, Class<?> provider, String brand) {
+        try {
+            int[] ids = mgr.getAppWidgetIds(new android.content.ComponentName(ctx, provider));
+            for (int id : ids) render(ctx, mgr, id, brand, bgResOf(brand), provider);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static int bgResOf(String brand) {
+        return "evening".equals(brand) ? R.drawable.widget_evening_bg : R.drawable.widget_morning_bg;
     }
 
     @Override
     public void onReceive(Context ctx, Intent intent) {
         super.onReceive(ctx, intent);
-        if (!actionTap().equals(intent.getAction())) return;
+        if (!actionTap(brand()).equals(intent.getAction())) return;
         int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         int row = intent.getIntExtra("row", -1);
         if (id == AppWidgetManager.INVALID_APPWIDGET_ID || row < 0 || row > 3) return;
@@ -69,18 +89,19 @@ abstract class HomeAdhkarProvider extends AppWidgetProvider {
         }
         boolean done = sp.getBoolean("r" + row + "_" + id, false);
         sp.edit().putBoolean("r" + row + "_" + id, !done).apply();
-        render(ctx, AppWidgetManager.getInstance(ctx), id);
+        render(ctx, AppWidgetManager.getInstance(ctx), id, brand(), bgRes(), getClass());
     }
 
-    private void render(Context ctx, AppWidgetManager mgr, int widgetId) {
+    static void render(Context ctx, AppWidgetManager mgr, int widgetId, String brand, int bgRes,
+            Class<?> provider) {
         SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         boolean fresh = todayKey().equals(sp.getString("date_" + widgetId, ""));
-        String[] items = items();
+        String[] items = itemsOf(brand);
         RemoteViews views = new RemoteViews(ctx.getPackageName(), R.layout.widget_adhkar_checklist);
 
-        views.setInt(R.id.adhkar_root, "setBackgroundResource", bgRes());
+        views.setInt(R.id.adhkar_root, "setBackgroundResource", bgRes);
         views.setTextViewText(R.id.adhkar_title,
-                "evening".equals(brand()) ? "أذكار المساء" : "أذكار الصباح");
+                "evening".equals(brand) ? "أذكار المساء" : "أذكار الصباح");
 
         int[] checks = {R.id.adhkar_check0, R.id.adhkar_check1, R.id.adhkar_check2, R.id.adhkar_check3};
         int[] titles = {R.id.adhkar_title0, R.id.adhkar_title1, R.id.adhkar_title2, R.id.adhkar_title3};
@@ -91,7 +112,7 @@ abstract class HomeAdhkarProvider extends AppWidgetProvider {
             views.setTextViewText(titles[i], (done ? "✓ " : "") + items[i]);
             views.setTextViewText(checks[i], done ? "●" : "○");
 
-            Intent tap = new Intent(ctx, getClass()).setAction(actionTap());
+            Intent tap = new Intent(ctx, provider).setAction(actionTap(brand));
             tap.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
             tap.putExtra("row", i);
             views.setOnClickPendingIntent(rows[i],

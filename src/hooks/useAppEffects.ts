@@ -9,6 +9,7 @@ import { checkAndPlayAdhanInApp } from '../utils/adhanPlayer';
 import { schedulePrayerNotifications } from '../utils/prayerNotifications';
 import { computePrayerTimes } from '../utils/prayerTimes';
 import { pushTasbeehChainToWidget } from '../utils/tasbeehWidget';
+import { resyncNative, syncPrayerToNative } from '../utils/nativeScheduler';
 
 interface UseAppEffectsOptions {
   isDarkMode: boolean;
@@ -74,6 +75,7 @@ export function useAppEffects({ isDarkMode, reminderSettings, setCurrentAlert }:
 
   // Schedule real system notifications (work even after the app is closed)
   useEffect(() => {
+    // على أندرويد يتولّى المجدول الأصلي الجدولة (يستمر بلا فتح يومي للتطبيق)
     syncSystemNotifications(reminderSettings);
     syncDuaOverlay(reminderSettings);
   }, [reminderSettings]);
@@ -94,11 +96,22 @@ export function useAppEffects({ isDarkMode, reminderSettings, setCurrentAlert }:
     window.addEventListener('focus', onFocus);
     const t = setTimeout(() => {
       schedulePrayerNotifications(loadPrayerSettings()).catch(() => {});
+      // المجدول الأصلي يحسب المواقيت ويحدّث الودجات ذاتياً
+      syncPrayerToNative(loadPrayerSettings()).catch(() => {});
     }, 3500);
     return () => {
       window.removeEventListener('focus', onFocus);
       clearTimeout(t);
     };
+  }, []);
+
+  // إعادة الجدولة عند العودة إلى التطبيق (تزامن مع الحالة الحالية)
+  useEffect(() => {
+    const onFocus = () => {
+      resyncNative().catch(() => {});
+    };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
   }, []);
 
   // In-app adhan: plays on any tab the moment the prayer time hits (foreground app).

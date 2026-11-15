@@ -23,6 +23,7 @@ interface FirestoreValue {
   doubleValue?: number;
   booleanValue?: boolean;
   timestampValue?: string;
+  mapValue?: { fields?: Record<string, FirestoreValue> };
 }
 
 function parseFieldValue(value: FirestoreValue | undefined): string {
@@ -43,12 +44,26 @@ function parseFirestoreDoc(document: { name?: string; fields?: Record<string, Fi
   const id = document.name ? document.name.split('/').pop() || rawName : rawName;
   const iconUrl = parseFieldValue(f.iconUrl) || parseFieldValue(f.icon) || parseFieldValue(f.logo);
   const storeUrl =
-  parseFieldValue(f.storeUrl) ||
-  parseFieldValue(f.playStoreUrl) ||
-  parseFieldValue(f.androidUrl) ||
-  parseFieldValue(f.url) ||
-  parseFieldValue(f.link);
+    parseFieldValue(f.storeUrl) ||
+    parseFieldValue(f.playStoreUrl) ||
+    parseFieldValue(f.androidUrl) ||
+    parseFieldValue(f.url) ||
+    parseFieldValue(f.link);
   const packageName = parseFieldValue(f.packageName) || parseFieldValue(f.package);
+  // Try to get nested objects (alternative app, etc.)
+  let alternativeApp: any = undefined;
+  const altFields = ['alternativeApp', 'alternative', 'التطبيقالبديل', 'تطبيق_بديل'];
+  for (const k of altFields) {
+    if (f[k]?.mapValue?.fields) {
+      alternativeApp = parseFirestoreDoc({ fields: f[k]!.mapValue!.fields } as any) || f[k]!.mapValue!.fields;
+      break;
+    }
+    if (f[k]?.stringValue) {
+      alternativeApp = f[k]!.stringValue;
+      break;
+    }
+  }
+  const proVal = f.pro?.booleanValue !== undefined ? f.pro.booleanValue : parseFieldValue(f.pro || f.isPro || f.proVersion || f.hasPro || f['النسخةالبرو'] || f['نسخة_البرو']);
   return {
     id,
     name: rawName,
@@ -62,7 +77,22 @@ function parseFirestoreDoc(document: { name?: string; fields?: Record<string, Fi
     packageName: packageName || undefined,
     category: parseFieldValue(f.category) || undefined,
     createdAt: parseFieldValue(f.createdAt) || undefined,
-  };
+    version: parseFieldValue(f.version) || parseFieldValue(f.appVersion) || parseFieldValue(f.versionName) || parseFieldValue(f.currentVersion) || parseFieldValue(f.latestVersion) || undefined,
+    appVersion: parseFieldValue(f.appVersion) || undefined,
+    versionName: parseFieldValue(f.versionName) || undefined,
+    pro: proVal === true || proVal === 'true' || proVal === '1' ? true : proVal || undefined,
+    isPro: f.isPro?.booleanValue,
+    proNotice: parseFieldValue(f.proNotice) || parseFieldValue(f.proMessage) || parseFieldValue(f.proText) || undefined,
+    alternativeApp,
+    alternative: alternativeApp,
+    alternativeAppName: parseFieldValue(f.alternativeAppName) || parseFieldValue(f.alternativeAppTitle) || undefined,
+    alternativeAppPackage: parseFieldValue(f.alternativeAppPackage) || parseFieldValue(f.alternativeAppPackageName) || parseFieldValue(f.alternativePackageName) || undefined,
+    alternativeAppUrl: parseFieldValue(f.alternativeAppUrl) || parseFieldValue(f.alternativeUrl) || parseFieldValue(f.alternativeStoreUrl) || parseFieldValue(f.alternativeLink) || undefined,
+    forceAlternative: f.forceAlternative?.booleanValue || f.mandatory?.booleanValue || f.isMandatory?.booleanValue || f.force?.booleanValue || undefined,
+    mandatory: f.mandatory?.booleanValue || f.isMandatory?.booleanValue || undefined,
+    updateUrl: parseFieldValue(f.updateUrl) || parseFieldValue(f.updateLink) || undefined,
+    playStoreUrl: parseFieldValue(f.playStoreUrl) || parseFieldValue(f.androidUrl) || undefined,
+  } as OurApp;
 }
 
 export function loadAppsCache(): { apps: OurApp[]; fetchedAt: number } | null {
