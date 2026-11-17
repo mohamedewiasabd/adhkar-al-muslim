@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Bell, Volume2, Smartphone, Sparkles, Check, AlarmClock, BatteryCharging } from 'lucide-react';
+import { X, Bell, Volume2, Smartphone, Sparkles, Check, AlarmClock, BatteryCharging, MoonStar } from 'lucide-react';
 import { ReminderSettings } from '../types';
 import { isAndroidPlatform } from '../utils/platform';
 import { useReminderSettings } from '../hooks/useReminderSettings';
@@ -278,6 +278,41 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
             actionClass="bg-blue-600 hover:bg-blue-700"
             onAction={!r.batteryExempt ? r.batteryExemption : undefined}
           />
+        )}
+
+        {/* وضع عدم الإزعاج بعد الأذان — أندرويد فقط */}
+        {isAndroidPlatform && (
+          <>
+            <div className="mb-3 p-3 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/50 flex items-center justify-between gap-3">
+              <div className="flex items-start gap-2 flex-1">
+                <MoonStar className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold text-sm text-stone-900 dark:text-stone-100 block">
+                    الصمت بعد الأذان 🌙
+                  </span>
+                  <span className="text-[11px] leading-relaxed text-stone-500 dark:text-stone-400 block mt-0.5">
+                    يضع الهاتف في وضع عدم الإزعاج بعد انتهاء الأذان: ساعة كاملة لكل الصلوات، ونصف ساعة بعد المغرب.
+                    وإن غيّر أحد الوضع أثناء المدة، يعود التطبيق لوضع عدم الإزعاج بعد دقيقة واحدة حتى انتهائها.
+                  </span>
+                </div>
+              </div>
+              <ToggleSwitch on={r.dndEnabled} onChange={r.toggleDnd} large id="btn-toggle-dnd" />
+            </div>
+
+            {r.dndEnabled && !r.dndPermission && (
+              <PermissionStatusCard
+                cardClass="bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/70 dark:border-amber-800/50 mb-3"
+                icon={<MoonStar className="w-4 h-4 text-amber-600 dark:text-amber-400" />}
+                title="صلاحية وضع عدم الإزعاج مطلوبة"
+                description="يحتاج أندرويد إذناً خاصاً للسماح للتطبيق بتغيير وضع الهاتف. اضغط ثم فعّل «الوصول إلى إشعارات عدم الإزعاج» من شاشة النظام."
+                badgeClass="bg-amber-500 text-white"
+                badgeLabel="تحتاج التفعيل"
+                actionLabel="فتح إعدادات عدم الإزعاج"
+                actionClass="bg-amber-500 hover:bg-amber-600"
+                onAction={r.dndSettings}
+              />
+            )}
+          </>
         )}
 
         {/* Test Alert Button */}

@@ -23,6 +23,7 @@ public class SchedulerBootReceiver extends BroadcastReceiver {
                 || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)
                 || "android.intent.action.QUICKBOOT_POWERON".equals(action)) {
             NativeScheduler.rescheduleAll(context.getApplicationContext());
+            DndController.restoreOnBoot(context.getApplicationContext());
         }
     }
 }

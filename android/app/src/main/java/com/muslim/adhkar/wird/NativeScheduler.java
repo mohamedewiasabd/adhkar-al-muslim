@@ -277,6 +277,8 @@ final class NativeScheduler {
                 schedule(ctx, RC_ADHAN_BASE + i, instant, KIND_ADHAN,
                         "حان موعد أذان " + arabic[i], null, names[i], instant);
             }
+            // وضع عدم الإزعاج بعد انتهاء الأذان (حتى لو كانت نغمة الأذان موقوفة)
+            DndController.scheduleForPrayer(ctx, names[i], instant);
             if (reminderEnabled && lead > 0) {
                 long remAt = instant - lead * 60_000L;
                 if (remAt > now) {

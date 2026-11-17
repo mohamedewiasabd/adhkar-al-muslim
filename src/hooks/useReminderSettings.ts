@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { ReminderSettings } from '../types';
 import { isAndroidPlatform } from '../utils/platform';
@@ -14,6 +14,7 @@ import {
 } from '../utils/adhkarNotifications';
 import { isBatteryExempt, requestBatteryExemption } from '../utils/batteryOptimizer';
 import { testDuaOverlay } from '../utils/duaOverlay';
+import { canControlDnd, getDndStatus, openDndSettings, setDndEnabled } from '../utils/dndController';
 
 export interface UseReminderSettingsResult {
   localSettings: ReminderSettings;
@@ -22,6 +23,8 @@ export interface UseReminderSettingsResult {
   systemStatus: 'granted' | 'denied' | 'pending' | 'unsupported';
   exactAlarmStatus: ExactAlarmStatus;
   batteryExempt: boolean;
+  dndEnabled: boolean;
+  dndPermission: boolean;
   systemTestSent: boolean;
   testSent: boolean;
   duaOverlayTestSent: boolean;
@@ -32,12 +35,14 @@ export interface UseReminderSettingsResult {
   qiyamTimeChange: (value: string) => void;
   toggleSound: () => void;
   toggleVibrate: () => void;
+  toggleDnd: () => void;
   requestPermission: () => Promise<void>;
   testNotification: () => void;
   testDuaOverlay: () => Promise<void>;
   systemPermission: () => Promise<void>;
   exactAlarmSettings: () => Promise<void>;
   batteryExemption: () => Promise<void>;
+  dndSettings: () => Promise<void>;
 }
 
 export const useReminderSettings = (
@@ -52,6 +57,9 @@ export const useReminderSettings = (
   const [systemStatus, setSystemStatus] = useState<'granted' | 'denied' | 'pending' | 'unsupported'>('pending');
   const [exactAlarmStatus, setExactAlarmStatus] = useState<ExactAlarmStatus>('unsupported');
   const [batteryExempt, setBatteryExempt] = useState(true);
+  const [dndEnabled, setDndEnabled] = useState(false);
+  const [dndPermission, setDndPermission] = useState(false);
+  const pendingDndEnable = useRef(false);
   const [systemTestSent, setSystemTestSent] = useState(false);
   const [testSent, setTestSent] = useState(false);
   const [duaOverlayTestSent, setDuaOverlayTestSent] = useState(false);
@@ -62,6 +70,24 @@ export const useReminderSettings = (
     getSystemNotificationStatus().then(setSystemStatus);
     checkExactAlarmStatus().then(setExactAlarmStatus);
     isBatteryExempt().then(setBatteryExempt);
+    canControlDnd().then(setDndPermission);
+    getDndStatus().then((s) => { if (s?.enabled !== undefined) setDndEnabled(s.enabled); });
+  }, [isOpen]);
+
+  // عند العودة من شاشة صلاحية النظام بعد منحها ⇒ فعّل الميزة تلقائياً
+  useEffect(() => {
+    if (!isOpen) return;
+    const onFocus = () => {
+      if (!pendingDndEnable.current) return;
+      canControlDnd().then((granted) => {
+        setDndPermission(granted);
+        if (!granted) return;
+        pendingDndEnable.current = false;
+        setDndEnabledNative(true);
+      });
+    };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
   }, [isOpen]);
 
   const persist = (updated: ReminderSettings) => {
@@ -84,6 +110,36 @@ export const useReminderSettings = (
   const toggleSound = () => persist({ ...localSettings, soundEnabled: !localSettings.soundEnabled });
 
   const toggleVibrate = () => persist({ ...localSettings, vibrateEnabled: !localSettings.vibrateEnabled });
+
+  const toggleDnd = () => {
+    const next = !dndEnabled;
+    if (next && !dndPermission) {
+      // افتح شاشة الصلاحية أولاً، ثم فعّل تلقائياً عند العودة إن مُنحت
+      pendingDndEnable.current = true;
+      openDndSettings().catch(() => {});
+      canControlDnd().then(setDndPermission);
+      return;
+    }
+    setDndEnabled(next);
+    setDndEnabledNative(next);
+  };
+
+  const setDndEnabledNative = async (enabled: boolean) => {
+    setDndEnabled(enabled);
+    try {
+      const result = await setDndEnabled(enabled);
+      if (result?.permission !== undefined) setDndPermission(result.permission);
+      if (result?.enabled !== undefined) setDndEnabled(result.enabled);
+    } catch {
+      // ignore
+    }
+    canControlDnd().then(setDndPermission);
+  };
+
+  const dndSettings = async () => {
+    await openDndSettings();
+    canControlDnd().then(setDndPermission);
+  };
 
   const requestPermission = async () => {
     const granted = await requestBrowserNotificationPermission();
@@ -147,6 +203,8 @@ export const useReminderSettings = (
     systemStatus,
     exactAlarmStatus,
     batteryExempt,
+    dndEnabled,
+    dndPermission,
     systemTestSent,
     testSent,
     duaOverlayTestSent,
@@ -157,11 +215,13 @@ export const useReminderSettings = (
     qiyamTimeChange,
     toggleSound,
     toggleVibrate,
+    toggleDnd,
     requestPermission,
     testNotification,
     testDuaOverlay: testDuaOverlayAsync,
     systemPermission,
     exactAlarmSettings,
-    batteryExemption
+    batteryExemption,
+    dndSettings
   };
 };
