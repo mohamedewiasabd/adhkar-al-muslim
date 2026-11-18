@@ -4,6 +4,9 @@
 946bba0b6774fb22e94f4f63967ea1704bb28cb36b7be2f06851503f46cdd18d  apk/أذكار-المسلم-v1.9.18-release.apk
 ced53c982af7578f951d020e2cd4d4cc97e7a5548350f0ac69fdf2630be18e77  apk/أذكار-المسلم-v1.9.19-debug.apk
 7d5e0d600dac1bb9e349a75b2dbaf6b3c7739e6af6eeaca3456955c52000cb3a  apk/أذكار-المسلم-v1.9.19-release.apk
+7864ea12c053548b53bb2224c5bd78bc9964e751951c5b58f03c4b5367928dca  apk/أذكار-المسلم-v1.9.20-debug.apk
+2795ec39124d9c4f1135ca02dc9f47e766cb80616cd9237d8b83c58f967e12aa  apk/أذكار-المسلم-v1.9.20-release.apk
 f901bdbffbdfe94c3b20b16ad3b9fcd9f19b77215b0f5c7cd938054dd75d07ff  play/أذكار-المسلم-v1.9.17-release.aab
 6323a133c6076b270b982d2f8cdbf181ae263f4df2424b8282cd44c18816b2b5  play/أذكار-المسلم-v1.9.18-release.aab
 9e70b550b271b750fd6feb8490b4c1ba6fa14eaf78c04349afb9cff1c963332e  play/أذكار-المسلم-v1.9.19-release.aab
+d72dd5eebbef984e776b45a923f3a878e9ebe0483ec3963807e57c782eb44d3a  play/أذكار-المسلم-v1.9.20-release.aab

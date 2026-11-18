@@ -14,7 +14,13 @@ import {
 } from '../utils/adhkarNotifications';
 import { isBatteryExempt, requestBatteryExemption } from '../utils/batteryOptimizer';
 import { testDuaOverlay } from '../utils/duaOverlay';
-import { canControlDnd, getDndStatus, loadDndEnabled, openDndSettings, setDndEnabled } from '../utils/dndController';
+import {
+  canControlDnd,
+  getDndStatus,
+  loadDndEnabled,
+  openDndSettings,
+  setDndEnabled as applyDndNative
+} from '../utils/dndController';
 
 export interface UseReminderSettingsResult {
   localSettings: ReminderSettings;
@@ -135,7 +141,7 @@ export const useReminderSettings = (
   const setDndEnabledNative = async (enabled: boolean) => {
     setDndEnabled(enabled);
     try {
-      const result = await setDndEnabled(enabled);
+      const result = await applyDndNative(enabled);
       if (result?.permission !== undefined) setDndPermission(result.permission);
       if (result?.enabled !== undefined) setDndEnabled(result.enabled);
     } catch {
