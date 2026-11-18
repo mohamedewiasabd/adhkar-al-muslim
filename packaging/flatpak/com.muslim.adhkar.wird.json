@@ -31,8 +31,8 @@
         {
           "type": "file",
           "only-arches": ["x86_64"],
-          "url": "https://github.com/mohamedewiasabd/adhkar-al-muslim/releases/download/v1.9.19/adhkar-al-muslim_1.9.19_amd64.AppImage",
-          "sha256": "2e7b13ab27f84176d316850bc654f0ff1e74031899735219efbfaed8d073c662",
+          "url": "https://github.com/mohamedewiasabd/adhkar-al-muslim/releases/download/v1.9.20/adhkar-al-muslim_1.9.20_amd64.AppImage",
+          "sha256": "2587ba98b47eb0e28753e6dd6a04d6d3e4474724e2183bb0e3605e085d20b42f",
           "dest-filename": "Adhkar.AppImage",
           "x-checker-data": {
             "type": "json",
