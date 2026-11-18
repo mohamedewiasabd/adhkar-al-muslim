@@ -10,6 +10,7 @@ import { schedulePrayerNotifications } from '../utils/prayerNotifications';
 import { computePrayerTimes } from '../utils/prayerTimes';
 import { pushTasbeehChainToWidget } from '../utils/tasbeehWidget';
 import { resyncNative, syncPrayerToNative } from '../utils/nativeScheduler';
+import { syncDndToNative } from '../utils/dndController';
 
 interface UseAppEffectsOptions {
   isDarkMode: boolean;
@@ -109,9 +110,16 @@ export function useAppEffects({ isDarkMode, reminderSettings, setCurrentAlert }:
   useEffect(() => {
     const onFocus = () => {
       resyncNative().catch(() => {});
+      syncDndToNative().catch(() => {});
     };
     window.addEventListener('focus', onFocus);
     return () => window.removeEventListener('focus', onFocus);
+  }, []);
+
+  // مزامنة مفتاح "الصمت بعد الأذان" عند فتح التطبيق: اختيار المستخدم المخزّن
+  // هو المرجع، فنُطابقه مع الطبقة الأصلية لتبقى الجدولة تعمل بلا فتح يومي.
+  useEffect(() => {
+    syncDndToNative().catch(() => {});
   }, []);
 
   // In-app adhan: plays on any tab the moment the prayer time hits (foreground app).

@@ -14,7 +14,7 @@ import {
 } from '../utils/adhkarNotifications';
 import { isBatteryExempt, requestBatteryExemption } from '../utils/batteryOptimizer';
 import { testDuaOverlay } from '../utils/duaOverlay';
-import { canControlDnd, getDndStatus, openDndSettings, setDndEnabled } from '../utils/dndController';
+import { canControlDnd, getDndStatus, loadDndEnabled, openDndSettings, setDndEnabled } from '../utils/dndController';
 
 export interface UseReminderSettingsResult {
   localSettings: ReminderSettings;
@@ -57,7 +57,8 @@ export const useReminderSettings = (
   const [systemStatus, setSystemStatus] = useState<'granted' | 'denied' | 'pending' | 'unsupported'>('pending');
   const [exactAlarmStatus, setExactAlarmStatus] = useState<ExactAlarmStatus>('unsupported');
   const [batteryExempt, setBatteryExempt] = useState(true);
-  const [dndEnabled, setDndEnabled] = useState(false);
+  // نقرأ الحالة المخزّنة فوراً حتى لا يظهر المفتاح مغلقاً ثم يقفز عند اكتمال الاستدعاء الأصلي
+  const [dndEnabled, setDndEnabled] = useState<boolean>(() => loadDndEnabled());
   const [dndPermission, setDndPermission] = useState(false);
   const pendingDndEnable = useRef(false);
   const [systemTestSent, setSystemTestSent] = useState(false);
@@ -70,14 +71,18 @@ export const useReminderSettings = (
     getSystemNotificationStatus().then(setSystemStatus);
     checkExactAlarmStatus().then(setExactAlarmStatus);
     isBatteryExempt().then(setBatteryExempt);
-    canControlDnd().then(setDndPermission);
-    getDndStatus().then((s) => { if (s?.enabled !== undefined) setDndEnabled(s.enabled); });
+    getDndStatus().then((s) => {
+      if (!s) return;
+      if (s.enabled !== undefined) setDndEnabled(s.enabled);
+      if (s.permission !== undefined) setDndPermission(s.permission);
+    });
   }, [isOpen]);
 
-  // عند العودة من شاشة صلاحية النظام بعد منحها ⇒ فعّل الميزة تلقائياً
+  // عند العودة من شاشة صلاحية النظام بعد منحها ⇒ فعّل الميزة تلقائياً.
+  // نستمع لـ visibilitychange أيضاً لأن focus لا يُطلق دائماً على أندرويد عند العودة من شاشة النظام.
   useEffect(() => {
     if (!isOpen) return;
-    const onFocus = () => {
+    const onReturn = () => {
       if (!pendingDndEnable.current) return;
       canControlDnd().then((granted) => {
         setDndPermission(granted);
@@ -86,8 +91,12 @@ export const useReminderSettings = (
         setDndEnabledNative(true);
       });
     };
-    window.addEventListener('focus', onFocus);
-    return () => window.removeEventListener('focus', onFocus);
+    window.addEventListener('focus', onReturn);
+    document.addEventListener('visibilitychange', onReturn);
+    return () => {
+      window.removeEventListener('focus', onReturn);
+      document.removeEventListener('visibilitychange', onReturn);
+    };
   }, [isOpen]);
 
   const persist = (updated: ReminderSettings) => {
@@ -113,15 +122,14 @@ export const useReminderSettings = (
 
   const toggleDnd = () => {
     const next = !dndEnabled;
+    // نُفعّل/نُوقف فوراً ونحفظ الاختيار — لا ننتظر الصلاحية وإلا ظل المفتاح مغلقاً
+    setDndEnabledNative(next);
     if (next && !dndPermission) {
-      // افتح شاشة الصلاحية أولاً، ثم فعّل تلقائياً عند العودة إن مُنحت
+      // افتح شاشة الصلاحية، ثم أعد المزامنة عند العودة إن مُنحت
       pendingDndEnable.current = true;
       openDndSettings().catch(() => {});
       canControlDnd().then(setDndPermission);
-      return;
     }
-    setDndEnabled(next);
-    setDndEnabledNative(next);
   };
 
   const setDndEnabledNative = async (enabled: boolean) => {

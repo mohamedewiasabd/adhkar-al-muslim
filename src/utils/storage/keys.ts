@@ -16,5 +16,6 @@ export const KEYS = {
   CUSTOM_TASBEEH: 'noor_custom_tasbeeh_v1',
   QURAN_BOOKMARK: 'noor_quran_bookmark_v1',
   QURAN_WIRD_GOAL: 'noor_quran_wird_goal_v1',
-  QURAN_HIFZ_PROGRESS: 'noor_quran_hifz_progress_v1'
+  QURAN_HIFZ_PROGRESS: 'noor_quran_hifz_progress_v1',
+  DND_ENABLED: 'noor_dnd_enabled_v1'
 } as const;
