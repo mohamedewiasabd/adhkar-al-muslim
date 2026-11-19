@@ -119,9 +119,17 @@ final class DndController {
         if (hasActiveWindow(app) && sp(app).getLong(WINDOW_END, 0L) > onAt) return;
 
         // معرّف مستقل لكل صلاة حتى لا تُستبدل نوافذ الصلوات بعضها
-        int onCode = DndReceiver.requestCodeFor(prayerName);
-        DndReceiver.cancel(app, onCode);
-        DndReceiver.schedule(app, onCode, onAt, DndReceiver.ACT_ON, prayerName, offAt);
+        DndReceiver.cancelOnAlarms(app, prayerName);
+        // ساعة منبّه = مؤقّت دقيق ومُعفى من Doze، فيبدأ الصمت بعد 3 دقائق من الأذان فعلياً
+        DndReceiver.scheduleExact(app, DndReceiver.requestCodeFor(prayerName), onAt,
+                DndReceiver.ACT_ON, prayerName, offAt);
+        // نسخة احتياطية دقيقة بمعرّف آخر (setExactAndAllowWhileIdle) تحسباً لإدارة بطارية صارمة
+        DndReceiver.schedule(app, DndReceiver.backupRequestCodeFor(prayerName), onAt,
+                DndReceiver.ACT_ON, prayerName, offAt);
+        android.util.Log.d("AdhkarDnd", "scheduled " + prayerName
+                + " adhan=" + android.text.format.DateFormat.format("HH:mm:ss", adhanInstant)
+                + " dndOn=" + android.text.format.DateFormat.format("HH:mm:ss", onAt)
+                + " offAt=" + android.text.format.DateFormat.format("HH:mm:ss", offAt));
     }
 
     /** يبدأ فترة عدم الإزعاج (يُستدعى من المؤقّت). */
@@ -135,6 +143,10 @@ final class DndController {
 
         NotificationManager nm = (NotificationManager) app.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return;
+
+        android.util.Log.d("AdhkarDnd", "startWindow " + prayerName
+                + " fired=" + android.text.format.DateFormat.format("HH:mm:ss", now)
+                + " plannedEnd=" + android.text.format.DateFormat.format("HH:mm:ss", offAt));
 
         // نحفظ الوضع الأصلي مرة واحدة فقط (قبل أول تغيير لنا)
         if (!hasActiveWindow(app)) {
@@ -159,7 +171,9 @@ final class DndController {
         restoreOriginal(app);
         clearWindow(app);
         DndWatchdog.unregister(app);
-        DndReceiver.cancel(app, DndReceiver.RC_ON);
+        for (String name : DndReceiver.PRAYERS) {
+            DndReceiver.cancelOnAlarms(app, name);
+        }
         DndReceiver.cancel(app, DndReceiver.RC_OFF);
         DndReceiver.cancel(app, DndReceiver.RC_REAPPLY);
     }
@@ -298,7 +312,7 @@ final class DndController {
         DndReceiver.cancel(ctx, DndReceiver.RC_OFF);
         DndReceiver.cancel(ctx, DndReceiver.RC_REAPPLY);
         for (String name : DndReceiver.PRAYERS) {
-            DndReceiver.cancel(ctx, DndReceiver.requestCodeFor(name));
+            DndReceiver.cancelOnAlarms(ctx, name);
         }
     }
 

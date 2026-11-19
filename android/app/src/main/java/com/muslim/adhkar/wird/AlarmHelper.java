@@ -34,6 +34,27 @@ final class AlarmHelper {
         }
     }
 
+    /**
+     * مؤقّت "ساعة منبّه": دقيق بالثانية ومُعفى من وضع السكون العميق (Doze)
+     * ولا يحتاج إذناً خاصاً. يُستخدم لبداية فترة عدم الإزعاج حتى لا تتأخر
+     * دقائق طويلة quando ينام الجهاز (setAndAllowWhileIdle غير دقيق في Doze).
+     */
+    static void scheduleAlarmClock(Context ctx, int requestCode, long at, String action, String extra, long extraLong) {
+        if (at <= 0) return;
+        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        if (am == null) return;
+        Intent intent = new Intent(ctx, DndReceiver.class).setAction(action);
+        intent.putExtra("prayer", extra);
+        intent.putExtra("end", extraLong);
+        PendingIntent pi = PendingIntent.getBroadcast(ctx, requestCode, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        try {
+            am.setAlarmClock(new AlarmManager.AlarmClockInfo(at, pi), pi);
+        } catch (SecurityException ignored) {
+            schedule(ctx, requestCode, at, action, extra, extraLong);
+        }
+    }
+
     static void cancel(Context ctx, int requestCode) {
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         if (am == null) return;

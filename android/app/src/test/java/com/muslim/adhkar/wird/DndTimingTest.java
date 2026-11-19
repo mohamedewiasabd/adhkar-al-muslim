@@ -42,6 +42,9 @@ public class DndTimingTest {
             for (int j = 0; j < i; j++) {
                 assertNotEquals("each prayer must have a distinct alarm code", seen[j], seen[i]);
             }
+            // لا يجب أن يصطدم معرّف بداية أي صلاة بمعرّف النهاية أو الإعادة
+            assertNotEquals("ON code must not collide with OFF", DndReceiver.RC_OFF, seen[i]);
+            assertNotEquals("ON code must not collide with REAPPLY", DndReceiver.RC_REAPPLY, seen[i]);
         }
     }
 

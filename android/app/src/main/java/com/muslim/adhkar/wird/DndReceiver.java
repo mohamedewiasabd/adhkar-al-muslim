@@ -11,22 +11,34 @@ public class DndReceiver extends BroadcastReceiver {
     static final String ACT_OFF = "com.muslim.adhkar.wird.DND_OFF";
     static final String ACT_REAPPLY = "com.muslim.adhkar.wird.DND_REAPPLY";
 
-    static final int RC_ON = 7101;
-    static final int RC_OFF = 7102;
-    static final int RC_REAPPLY = 7103;
+    // نطاقات منفصلة تماماً — لا تتداخل مع بعضها (الخطأ السابق كان RC_ON + index يصطدم بـ RC_OFF)
+    static final int RC_ON_BASE = 7200;      // 7200..7204 بداية كل صلاة (ساعة منبّه دقيقة)
+    static final int RC_OFF = 7300;          // نهاية النافذة
+    static final int RC_REAPPLY = 7400;      // إعادة الوضع بعد تغيير المستخدم
+    static final int RC_ON_BACKUP_BASE = 7500; // 7500..7504 نسخة احتياطية دقيقة
 
     static final String[] PRAYERS = { "fajr", "dhuhr", "asr", "maghrib", "isha" };
 
+    private static int indexOf(String prayer) {
+        for (int i = 0; i < PRAYERS.length; i++) {
+            if (PRAYERS[i].equals(prayer)) return i;
+        }
+        return 0;
+    }
+
     /** معرّف مؤقّت مستقل لبداية عدم إزعاج كل صلاة. */
     static int requestCodeFor(String prayer) {
-        int index = 0;
-        for (int i = 0; i < PRAYERS.length; i++) {
-            if (PRAYERS[i].equals(prayer)) {
-                index = i;
-                break;
-            }
-        }
-        return RC_ON + index;
+        return RC_ON_BASE + indexOf(prayer);
+    }
+
+    /** نسخة احتياطية بمعرّف مختلف تماماً — إن ألغت إدارة البطارية عند مصنّع ما المؤقّت الأساسي. */
+    static int backupRequestCodeFor(String prayer) {
+        return RC_ON_BACKUP_BASE + indexOf(prayer);
+    }
+
+    static void cancelOnAlarms(Context ctx, String prayer) {
+        cancel(ctx, requestCodeFor(prayer));
+        cancel(ctx, backupRequestCodeFor(prayer));
     }
 
     private static final String EXTRA_PRAYER = "prayer";
@@ -50,6 +62,11 @@ public class DndReceiver extends BroadcastReceiver {
 
     static void schedule(Context ctx, int requestCode, long at, String action, String prayer, long end) {
         AlarmHelper.schedule(ctx, requestCode, at, action, prayer, end);
+    }
+
+    /** مؤقّت ساعة منبّه: دقيق ومُعفى من Doze ⇒ يبدأ الصمت في موعده بالضبط. */
+    static void scheduleExact(Context ctx, int requestCode, long at, String action, String prayer, long end) {
+        AlarmHelper.scheduleAlarmClock(ctx, requestCode, at, action, prayer, end);
     }
 
     static void cancel(Context ctx, int requestCode) {
